@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # guyInFinance
 
 This template should help get you started developing with Vue 3 in Vite.
@@ -27,3 +28,7 @@ npm run dev
 ```sh
 npm run build
 ```
+=======
+# guy-in-finance
+An app that studies user's data on spending to create budgets for them for saving, loans repaying etc
+>>>>>>> c685167e22a7caf1807188a75aef9a3d54637e6d
