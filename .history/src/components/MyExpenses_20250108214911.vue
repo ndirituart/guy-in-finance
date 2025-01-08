@@ -1,0 +1,3 @@
+<template>
+    <head></head>
+</template>
