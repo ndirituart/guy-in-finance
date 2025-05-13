@@ -8,12 +8,15 @@ import FamilyFriends from '@/components/FamilyFriends.vue';
 import LoansPage from '@/components/LoansPage.vue';
 import PayBill from '@/components/PayBill.vue';
 import UserSavings from '@/components/UserSavings.vue';
+import UserProfile from '@/components/UserProfile.vue';
+import LogIn from '@/components/LogIn.vue'
+import SignUp from '@/components/SignUp.vue'
+
 // Future components
 // import BudgetPage from '@/components/BudgetPage.vue';
 // import MonthlyExpenses from '@/components/MonthlyExpenses.vue';
 // import MonthlyIncome from '@/components/MonthlyIncome.vue';
 // import MonthlySavings from '@/components/MonthlySavings.vue';
-// import UserProfile from '@/components/UserProfile.vue';
 
 const routes = [
   {
@@ -53,9 +56,25 @@ const routes = [
   },
   {
     path: '/user-savings',
-    name: 'User Savings',
+    name: 'UserSavings',
     component: UserSavings
   },
+  {
+    path: '/user-profile',
+    name: 'UserProfile',
+    component: UserProfile
+  },
+  {
+  path: '/login',
+  name: 'LogIn',
+  component: LogIn,
+},
+  {
+    path: '/signup',
+    name: 'SignUp',
+    component: SignUp
+  },
+  // 
   // Future routes
   // {
   //   path: '/budget',
