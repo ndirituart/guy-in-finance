@@ -1,7 +1,11 @@
 <template>
   <div class="account-page">
     <header class="header">
-      <h1>Hello {{ username }} <span class="account-icon">👤</span></h1>
+      <h1>Hello {{ username }}
+        <router-link to="/user-profile" class="account-icon-link">
+          <span class="account-icon">👤</span>
+        </router-link>
+      </h1>
     </header>
 
     <div class="balance-container">
@@ -146,5 +150,31 @@ export default {
 
 .category-box:active {
   background-color: red
+}
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #42b983; /* Green by default */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s; /* Smooth transition for background color */
+}
+
+button.red {
+  background-color: red; /* Red when clicked */
+}
+
+button.orange {
+  background-color: rgb(0, 255, 85); /* Orange when hovered before clicked */
+}
+
+button:hover {
+  background-color: orange; /* Orange on hover */
+}
+
+button:active {
+  background-color: red; /* Red when the button is actively clicked */
 };
 </style>

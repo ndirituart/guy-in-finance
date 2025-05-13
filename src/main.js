@@ -1,7 +1,7 @@
 // main.js
 import { createApp } from 'vue';
 import App from './App.vue';
-//for global functionality
+//for global functionalityof AccountBalance on different pages
 import { createPinia } from 'pinia';
 import router from './router';
 
