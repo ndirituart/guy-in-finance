@@ -83,6 +83,7 @@
 <script>
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import axios from 'axios'; // Import the axios library that connects to API endpoints to
 
 export default {
   name: 'SignUp',
@@ -136,12 +137,32 @@ export default {
       }
     };
 
-    const submitForm = () => {
-      if (!formValid.value) return;
-      alert('Account created successfully!');
-      router.push('/home');
-    };
+    const submitForm = async () => {
+  if (!formValid.value) return;
 
+  try {
+    const response = await axios.post('http://127.0.0.1:8000/api/register', {
+      username: form.value.username,
+      first_name: form.value.firstName,
+      middle_name: form.value.middleName,
+      last_name: form.value.lastName,
+      email: form.value.email,
+      birthday: form.value.birthday,
+      id_number: form.value.idNumber,
+      phone_number: form.value.phone,
+      password: form.value.password,
+      password_confirmation: form.value.confirmPassword,
+    });
+
+    alert('Account created successfully!');
+    router.push('/home'); // or your landing page
+  } catch (error) {
+    console.error('Signup failed:', error.response?.data || error.message);
+    alert('Signup failed: ' + (error.response?.data?.message || 'Unknown error'));
+  }
+};
+    // Function to navigate to the login page
+    // This function is called when the user clicks the "LOGIN" button
     const goToLogin = () => {
       router.push('/login');
     };
