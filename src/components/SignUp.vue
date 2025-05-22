@@ -140,8 +140,9 @@ export default {
     const submitForm = async () => {
   if (!formValid.value) return;
 
-  try {
-    const response = await axios.post('http://127.0.0.1:8000/api/register', {
+      try {
+    //the endpoint where we register from
+   await axios.post('http://127.0.0.1:8000/api/register', {
       username: form.value.username,
       first_name: form.value.firstName,
       middle_name: form.value.middleName,
