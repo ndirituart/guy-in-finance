@@ -33,19 +33,10 @@
 
         <button class="login-btn" type="submit">LOGIN</button>
 
-        <div class="social-login">
-          <p>Or Sign Up Using</p>
-          <div class="social-icons">
-            <i class="fab fa-facebook-f"></i>
-            <i class="fab fa-twitter"></i>
-            <i class="fab fa-google"></i>
-          </div>
-        </div>
-
-        <div class="signup-link">
-          <p>Don't have an account?</p>
-          <router-link to="/signup">SIGN UP</router-link>
-        </div>
+       <div class="signup-btn">
+  <p>Don't have an account?</p>
+  <router-link to="/signup" class="login-btn signup-login-btn">SIGN UP</router-link>
+</div>
       </form>
     </div>
   </div>
@@ -119,12 +110,13 @@ const handleLogin = async () => {
 @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
 
 .login-container {
+  min-height: 100vh;
+  background: linear-gradient(to right, #00c6ff, #0072ff);
   display: flex;
-  justify-content: center;
   align-items: center;
-  height: 100vh;
-  background: linear-gradient(to right, #6a11cb, #2575fc);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  justify-content: center;
+  padding: 20px; /* Add some padding for smaller screens */
+  box-sizing: border-box; /* Include padding in element's total width and height */
 }
 
 .login-box {
@@ -210,37 +202,6 @@ button:hover {
 button:active {
   background-color: red;
 }
-.social-login {
-  margin-top: 1.5rem;
-}
-
-.social-login p {
-  margin-bottom: 0.5rem;
-  color: #888;
-}
-
-.social-icons i {
-  margin: 0 0.5rem;
-  font-size: 1.2rem;
-  cursor: pointer;
-  color: #555;
-}
-
-.social-icons i:hover {
-  color: #000;
-}
-
-.signup-link {
-  margin-top: 1rem;
-  color: #888;
-  text-align: center;
-}
-
-.signup-link a {
-  color: #0072ff;
-  font-weight: bold;
-  text-decoration: none;
-}
 
 /* Style for error message */
 .error-message {
@@ -251,5 +212,25 @@ button:active {
   border-radius: 8px;
   margin-bottom: 1rem;
   text-align: center;
+}
+/* Existing styles for button.login-btn remain */
+
+.signup-login-btn {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #42b983; /* Green by default */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s; /* Smooth transition for background color */
+}
+
+.signup-login-btn:hover {
+  background-color: #218838; /* Darker green on hover */
+}
+
+.signup-login-btn:active {
+  background-color: #1e7e34;
 }
 </style>
