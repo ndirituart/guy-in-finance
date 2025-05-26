@@ -19,7 +19,9 @@ return [
 
     'allowed_methods' => ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
 
-    'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:8080/')],// //Website URL
+    'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:8080/')],
+
+    // //Website URL
 
     'allowed_origins_patterns' => [],
 

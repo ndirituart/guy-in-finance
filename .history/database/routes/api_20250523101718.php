@@ -2,17 +2,16 @@
 
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\AuthController;
 
 // the three endpoints for login, logout and register
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'destroy']);
+Route::post('/register', [AuthController::class, 'store']);
+Route::post('/login', [AuthenticatedSessionController::class, 'store']);
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 
 
 
 // The API routes for the application which is the default route
-// Route::get('/', fn () => ['Laravel' => app()->version()]);
+Route::get('/', fn () => ['Laravel' => app()->version()]);
 
 
 //Authentication passes through the api middleware for protection from unauthorized access

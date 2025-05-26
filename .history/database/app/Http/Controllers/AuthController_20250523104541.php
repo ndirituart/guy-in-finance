@@ -41,13 +41,14 @@ class AuthController extends Controller
             'birthday' => $request->birthday,
             'id_number' => $request->id_number,
             'phone_number' => $request->phone_number,
-            'password' => Hash::make($request->password),
+            'password' => Hash::make($request->password), //Passwords are auto hashed with Laravel's default bcrypt() function.
         ]);
         // Generate a unique token for the user OTP
         $token = $user->createToken('main')->plainTextToken;
 
         return response()->json(['message' => 'Account created successfully!', 'user' => $user, 'token' => $token], 201);
     }
+    
 
     public function showLogin() {
         return view('login'); // Assuming you still have a Blade login form
@@ -60,7 +61,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
             $token = $user->createToken('main')->plainTextToken;
-            //$request->session()->regenerate();
+            $request->session()->regenerate();
             return response()->json(['redirect' => '/home', 'token' => $token], 200); // Return token on successful login
         }
 

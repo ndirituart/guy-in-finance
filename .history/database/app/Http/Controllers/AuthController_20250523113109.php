@@ -60,7 +60,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
             $token = $user->createToken('main')->plainTextToken;
-            //$request->session()->regenerate();
+            $request->session()->regenerate();
             return response()->json(['redirect' => '/home', 'token' => $token], 200); // Return token on successful login
         }
 
