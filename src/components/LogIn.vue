@@ -3,16 +3,13 @@
     <div class="login-box">
       <h2>Login</h2>
       <form @submit.prevent="handleLogin">
+        <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
+
         <div class="input-group">
-          <label for="username">Username</label>
-          <div class="input-icon">
+          <label for="email">Email</label> <div class="input-icon">
             <i class="fas fa-user"></i>
             <input
-              type="text"
-              id="username"
-              v-model="username"
-              placeholder="Type your username"
-              required
+              type="email" id="email"   v-model="email" placeholder="Type your email" required
             />
           </div>
         </div>
@@ -57,20 +54,65 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import axios from 'axios'; // Import Axios
 
 // defineOptions({
 //   name: 'LogIn',
 // });
 
-const username = ref('');
+// Change username to email to match backend AuthController's expected field
+const email = ref('');
 const password = ref('');
+const errorMessage = ref(''); // To display API errors
 const router = useRouter();
 
-const handleLogin = () => {
-  alert(`Logging in with\nUsername: ${username.value}\nPassword: ${password.value}`);
-  // Add real login logic here
-  router.push('/home'); // Example of navigation after login
+const handleLogin = async () => {
+  errorMessage.value = '';
+
+  try {
+    const response = await axios.post('http://127.0.0.1:8000/api/login',
+    {
+  withCredentials: true
+},
+  {
+    email: email.value,
+    password: password.value,
+      },
+  //  withCredentials: true,
+  // Set headers to accept JSON
+  {
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    }
+  }
+);
+
+    const token = response.data.token;
+    if (token) {
+      // Save token and set default header
+      localStorage.setItem('authToken', token);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+      // ✅ Navigate to home page
+      router.push({ name: 'HomePage' });
+    } else {
+      errorMessage.value = 'Login successful, but no token received.';
+    }
+
+  }
+  //specifying errors more is it lack of connection or wrong credentials
+  catch (error) {
+    console.error('Login error:', error);
+    if (error.response) {
+      console.error('Error response data:', error.response.data);
+      errorMessage.value = error.response.data.message || 'Login failed. Please try again.';
+    } else {
+      errorMessage.value = 'Network error. Please check your connection.';
+    }
+  }
 };
+
 </script>
 
 <style scoped>
@@ -166,7 +208,7 @@ button:hover {
 }
 
 button:active {
-  background-color: red; 
+  background-color: red;
 }
 .social-login {
   margin-top: 1.5rem;
@@ -198,5 +240,16 @@ button:active {
   color: #0072ff;
   font-weight: bold;
   text-decoration: none;
+}
+
+/* Style for error message */
+.error-message {
+  color: red;
+  background-color: #ffe6e6;
+  border: 1px solid red;
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  text-align: center;
 }
 </style>
