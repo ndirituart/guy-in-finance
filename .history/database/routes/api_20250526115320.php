@@ -20,11 +20,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Your authenticated API routes here
     Route::get('/home', function () {
         return response()->json(['message' => 'Authenticated!']);
+        
     });
-//For Laravel logs and to get errors
-    Route::get('/test-log', function () {
-    \Log::info('Test log route hit');
-    return response()->json(['message' => 'It works']);
-});
-
 });

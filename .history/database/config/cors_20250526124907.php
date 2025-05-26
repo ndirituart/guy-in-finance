@@ -11,10 +11,9 @@ return [
     | or "CORS". This determines what cross-origin operations may execute
     | in web browsers. You are free to adjust these settings as needed.
     |
-     |
-    */
     'enabled' => env('CORS_ENABLED', true),
-   
+    |
+    */
 
     'paths' => ['api/*', 'sanctum/csrf-cookie'],
 

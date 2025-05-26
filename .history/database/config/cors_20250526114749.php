@@ -11,16 +11,15 @@ return [
     | or "CORS". This determines what cross-origin operations may execute
     | in web browsers. You are free to adjust these settings as needed.
     |
-     |
+    | To learn more: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
+    |
     */
-    'enabled' => env('CORS_ENABLED', true),
-   
 
     'paths' => ['api/*', 'sanctum/csrf-cookie'],
 
-    'allowed_methods' => ['*'], //all methods POST,GET,ADD,DELETE
+    'allowed_methods' => ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
 
-    'allowed_origins' => ['http://localhost:8080'],// //Website URL env('FRONTEND_URL', 'http://localhost:8080/')
+    'allowed_origins' => [],// //Website URL env('FRONTEND_URL', 'http://localhost:8080/')
 
     'allowed_origins_patterns' => [],
 
