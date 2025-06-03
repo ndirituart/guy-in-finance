@@ -29,7 +29,7 @@
       <div class="category-box pink" @click="navigateTo('FamilyFriends')">
         <h3>Family & Friends</h3>
       </div>
-      <div class="category-box blue" @click="navigateTo('Bills')">
+      <div class="category-box blue" @click="navigateTo('PayBill')">
         <h3>Bills</h3>
         <div class="icons">
           <span>💧</span>
@@ -45,7 +45,7 @@
           <span>📱</span>
         </div>
       </div>
-      <div class="category-box yellow" @click="navigateTo('Savings')">
+      <div class="category-box yellow" @click="navigateTo('UserSavings')">
         <h3>Savings</h3>
         <span>💰</span>
       </div>

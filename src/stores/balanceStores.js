@@ -16,7 +16,7 @@ export const useBalanceStore = defineStore('balance', {
       return false;
     },
     resetBalance() {
-      this.accountBalance = 12390;
+      this.accountBalance = 13290;
     }
   },
 });
