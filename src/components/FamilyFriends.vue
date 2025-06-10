@@ -1,65 +1,168 @@
 <template>
-    <div class="family-friends-page">
-      <h1>Family & Friends</h1>
-  
-      <div class="options-container">
-        <div class="option-box" @click="sendMoney">
-          <h3>Send to Someone ❤️</h3>
-          <input type="tel" v-model="sendNumber" placeholder="Enter phone number" maxlength="14" />
-          <button @click="confirmSend">Send</button>
-        </div>
-        <div class="option-box" @click="requestMoney">
-          <h3>Receive from Someone</h3>
-          <input type="tel" v-model="receiveNumber" placeholder="Enter phone number" maxlength="14" />
-          <button @click="confirmRequest">Request</button>
-        </div>
+  <div class="family-friends-page">
+    <h1>Family & Friends</h1>
+
+    <div class="options-container">
+      <div class="option-box">
+        <h3>Send to Someone ❤️</h3>
+        <input type="text" v-model="sendName" placeholder="Enter name" />
+        <input type="tel" v-model="sendNumber" placeholder="Enter phone number" maxlength="14" />
+        <input type="number" v-model="sendAmount" placeholder="Enter amount" />
+        <button @click="confirmSend">Send</button>
+      </div>
+
+      <div class="option-box">
+        <h3>Receive from Someone</h3>
+        <input type="text" v-model="receiveName" placeholder="Enter name" />
+        <input type="tel" v-model="receiveNumber" placeholder="Enter phone number" maxlength="14" />
+        <input type="number" v-model="receiveAmount" placeholder="Enter amount" />
+        <button @click="confirmRequest">Request</button>
       </div>
     </div>
-  </template>
+<div v-if="transactions.length" class="receipt-table">
+  <h2>Transaction History</h2>
+  <table>
+  <thead>
+    <tr>
+      <th>Code</th>
+      <th>Name</th>
+      <th>Phone Number</th> <!-- New column -->
+      <th>Amount</th>
+      <th>Type</th>
+      <th>Time</th>
+      <th>Balance After</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr v-for="(txn, index) in transactions" :key="index">
+      <td>{{ txn.code }}</td>
+      <td>{{ txn.name }}</td>
+      <td>{{ txn.number }}</td> <!-- Display phone number -->
+      <td>{{ txn.amount }}</td>
+      <td>{{ txn.type }}</td>
+      <td>{{ txn.time }}</td>
+      <td>{{ txn.balance }}</td>
+    </tr>
+  </tbody>
+</table>
+
+</div>
+
+  </div>
+</template>
+
   
   <script>
   export default {
-    name: 'FamilyFriends',
-    data() {
-      return {
-        sendNumber: '',
-        receiveNumber: ''
-      };
+  name: 'FamilyFriends',
+  data() {
+    return {
+      sendName: '',
+      sendNumber: '',
+      sendAmount: 0,
+      receiveName: '',
+      receiveNumber: '',
+      receiveAmount: 0,
+      balance: 12390, // starting balance
+      transactions: [] // store all transactions
+    };
     },
-    methods: {
-  confirmSend() {
-    if (this.validatePhoneNumber(this.sendNumber)) {
-      // Show an interim message to avoid confusion
-      alert('Number is valid. Please wait, processing...');
+      //mounted method to load transactions and balance from localStorage
+mounted() {
+  const savedTransactions = localStorage.getItem('transactions');
+  const savedBalance = localStorage.getItem('balance');
 
-      // Simulate sending (you'll replace this with real logic)
-      setTimeout(() => {
-        // Temporary alert or eventual sending logic
-        alert(`Sending money to ${this.sendNumber}`);
-      }, 1500); // 1.5 seconds delay for realism
-    } else {
-      alert('Please enter a valid phone number.');
-    }
-  },
-
-  confirmRequest() {
-    if (this.validatePhoneNumber(this.receiveNumber)) {
-      alert('Number is valid. Please wait, processing...');
-      setTimeout(() => {
-        alert(`Requesting money from ${this.receiveNumber}`);
-      }, 1500);
-    } else {
-      alert('Please enter a valid phone number.');
-    }
-  },
-
-  validatePhoneNumber(number) {
-    // Accept +254 followed by 9 digits OR a full 12-digit number (like 254799076883)
-    return /^\+?\d{10,14}$/.test(number);
+  if (savedTransactions) {
+    this.transactions = JSON.parse(savedTransactions);
   }
+
+  if (savedBalance) {
+    this.balance = parseFloat(savedBalance);
+  }
+},
+  methods: {
+    confirmSend() {
+      if (this.validatePhoneNumber(this.sendNumber) && this.sendAmount > 0) {
+        if (this.sendAmount > this.balance) {
+          alert("Insufficient balance!");
+          return;
+        }
+
+        const code = 'TX' + Math.floor(Math.random() * 1000000);
+        const time = new Date().toLocaleString();
+        this.balance -= this.sendAmount;
+
+        this.transactions.push({
+  code,
+  name: this.sendName,
+  number: this.sendNumber, // Add phone number
+  amount: this.sendAmount,
+  type: '- Sent',
+  time,
+  balance: this.balance
+});
+
+
+        this.resetSendForm();
+      } else {
+        alert("Invalid number or amount.");
+      }
+      //to save request in use rprofile before storing to database
+      this.saveToLocalStorage();
+
+    },
+
+    confirmRequest() {
+      if (this.validatePhoneNumber(this.receiveNumber) && this.receiveAmount > 0) {
+        const code = 'TX' + Math.floor(Math.random() * 1000000);
+        const time = new Date().toLocaleString();
+        this.balance += this.receiveAmount;
+
+        this.transactions.push({
+  code,
+  name: this.receiveName,
+  number: this.receiveNumber, // Add phone number
+  amount: this.receiveAmount,
+  type: '+ Received',
+  time,
+  balance: this.balance
+});
+
+
+        this.resetReceiveForm();
+      } else {
+        alert("Invalid number or amount.");
+      }
+      //to save request in use rprofile before storing to database
+      this.saveToLocalStorage();
+    },
+
+    validatePhoneNumber(number) {
+      return /^\+?\d{10,14}$/.test(number);
+    },
+
+    resetSendForm() {
+      this.sendName = '';
+      this.sendNumber = '';
+      this.sendAmount = 0;
+    },
+
+    resetReceiveForm() {
+      this.receiveName = '';
+      this.receiveNumber = '';
+      this.receiveAmount = 0;
+    },
+    //adding the fucntion fo rsaving user transactions on their page
+    saveToLocalStorage() {
+  localStorage.setItem('transactions', JSON.stringify(this.transactions));
+  localStorage.setItem('balance', this.balance.toString());
 }
 
-  };
+
+    }
+  
+};
+
   </script>
   
   <style scoped>
@@ -109,4 +212,33 @@
   button:hover {
     background-color: #0056b3;
   }
+  .receipt-table {
+  margin-top: 30px;
+  padding: 20px;
+  max-width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+th, td {
+  border: 1px solid #ccc;
+  padding: 10px;
+  text-align: center;
+}
+
+thead {
+  background-color: #007BFF;
+  color: white;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
   </style>
