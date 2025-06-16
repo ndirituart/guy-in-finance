@@ -29,7 +29,7 @@
       <div class="category-box pink" @click="navigateTo('FamilyFriends')">
         <h3>Family & Friends</h3>
       </div>
-      <div class="category-box blue" @click="navigateTo('Bills')">
+      <div class="category-box blue" @click="navigateTo('PayBill')">
         <h3>Bills</h3>
         <div class="icons">
           <span>💧</span>
@@ -45,14 +45,14 @@
           <span>📱</span>
         </div>
       </div>
-      <div class="category-box yellow" @click="navigateTo('Savings')">
+      <div class="category-box yellow" @click="navigateTo('UserSavings')">
         <h3>Savings</h3>
         <span>💰</span>
       </div>
     </div>
     <div class="loan-inquiry">
       <h2>Do you need a loan?</h2>
-      <button @click="navigateTo('LoanPage')">LOAN</button>
+      <button @click="navigateTo('LoansPage')">LOAN</button>
     </div>
   </div>
 </template>
@@ -176,5 +176,5 @@ button:hover {
 
 button:active {
   background-color: red; /* Red when the button is actively clicked */
-}
+};
 </style>
