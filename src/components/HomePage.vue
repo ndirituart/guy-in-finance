@@ -52,7 +52,7 @@
     </div>
     <div class="loan-inquiry">
       <h2>Do you need a loan?</h2>
-      <button @click="navigateTo('LoanPage')">LOAN</button>
+      <button @click="navigateTo('LoansPage')">LOAN</button>
     </div>
   </div>
 </template>
