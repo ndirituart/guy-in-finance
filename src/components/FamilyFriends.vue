@@ -1,140 +1,151 @@
 <template>
   <div class="family-friends-page">
     <h1>Family & Friends</h1>
+    <p><strong>Current Balance:</strong> {{ balance }}</p>
+    <p><strong>Recalculated Balance (debug):</strong> {{ calculatedBalance }}</p>
 
     <div class="options-container">
+      <!-- Send Money -->
       <div class="option-box">
         <h3>Send to Someone ❤️</h3>
         <input type="text" v-model="sendName" placeholder="Enter name" />
         <input type="tel" v-model="sendNumber" placeholder="Enter phone number" maxlength="14" />
-        <input type="number" v-model="sendAmount" placeholder="Enter amount" />
+        <input type="number" v-model.number="sendAmount" placeholder="Enter amount" />
+        <input type="password" v-model="sendPin" placeholder="Enter PIN" maxlength="4" />
         <button @click="confirmSend">Send</button>
       </div>
 
+      <!-- Receive Money -->
       <div class="option-box">
         <h3>Receive from Someone</h3>
         <input type="text" v-model="receiveName" placeholder="Enter name" />
         <input type="tel" v-model="receiveNumber" placeholder="Enter phone number" maxlength="14" />
-        <input type="number" v-model="receiveAmount" placeholder="Enter amount" />
+        <input type="number" v-model.number="receiveAmount" placeholder="Enter amount" />
+        <input type="password" v-model="receivePin" placeholder="Enter PIN" maxlength="4" />
         <button @click="confirmRequest">Request</button>
       </div>
     </div>
-<div v-if="transactions.length" class="receipt-table">
-  <h2>Transaction History</h2>
-  <table>
-  <thead>
-    <tr>
-      <th>Code</th>
-      <th>Name</th>
-      <th>Phone Number</th> <!-- New column -->
-      <th>Amount</th>
-      <th>Type</th>
-      <th>Time</th>
-      <th>Balance After</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr v-for="(txn, index) in transactions" :key="index">
-      <td>{{ txn.code }}</td>
-      <td>{{ txn.name }}</td>
-      <td>{{ txn.number }}</td> <!-- Display phone number -->
-      <td>{{ txn.amount }}</td>
-      <td>{{ txn.type }}</td>
-      <td>{{ txn.time }}</td>
-      <td>{{ txn.balance }}</td>
-    </tr>
-  </tbody>
-</table>
 
-</div>
-
+    <div v-if="transactions.length" class="receipt-table">
+      <h2>Transaction History</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Amount</th>
+            <th>Type</th>
+            <th>Time</th>
+            <th>Balance After</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(txn, index) in transactions" :key="index">
+            <td>{{ txn.code }}</td>
+            <td>{{ txn.name }}</td>
+            <td>{{ txn.number }}</td>
+            <td>{{ txn.amount }}</td>
+            <td>{{ txn.type }}</td>
+            <td>{{ txn.time }}</td>
+            <td>{{ txn.balance }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
-  
-  <script>
-  export default {
+<script>
+export default {
   name: 'FamilyFriends',
   data() {
     return {
       sendName: '',
       sendNumber: '',
       sendAmount: 0,
+      sendPin: '',
       receiveName: '',
       receiveNumber: '',
       receiveAmount: 0,
-      balance: 12390, // starting balance
-      transactions: [] // store all transactions
+      receivePin: '',
+      balance: 12390,
+      transactions: [],
+      correctPin: '2007'
     };
-    },
-      //mounted method to load transactions and balance from localStorage
-mounted() {
-  const savedTransactions = localStorage.getItem('transactions');
-  const savedBalance = localStorage.getItem('balance');
+  },
+  mounted() {
+    const savedTxns = localStorage.getItem('transactions');
+    const savedBalance = localStorage.getItem('balance');
 
-  if (savedTransactions) {
-    this.transactions = JSON.parse(savedTransactions);
-  }
-
-  if (savedBalance) {
-    this.balance = parseFloat(savedBalance);
-  }
-},
+    if (savedTxns) {
+      this.transactions = JSON.parse(savedTxns);
+    }
+    if (savedBalance) {
+      this.balance = parseFloat(savedBalance);
+    }
+  },
+  computed: {
+    calculatedBalance() {
+      let base = 12390;
+      this.transactions.forEach(txn => {
+        if (txn.type === '+ Received') base += txn.amount;
+        if (txn.type === '- Sent') base -= txn.amount;
+      });
+      return base;
+    }
+  },
   methods: {
     confirmSend() {
-      if (this.validatePhoneNumber(this.sendNumber) && this.sendAmount > 0) {
-        if (this.sendAmount > this.balance) {
-          alert("Insufficient balance!");
-          return;
-        }
-
-        const code = 'TX' + Math.floor(Math.random() * 1000000);
-        const time = new Date().toLocaleString();
-        this.balance -= this.sendAmount;
-
-        this.transactions.push({
-  code,
-  name: this.sendName,
-  number: this.sendNumber, // Add phone number
-  amount: this.sendAmount,
-  type: '- Sent',
-  time,
-  balance: this.balance
-});
-
-
-        this.resetSendForm();
-      } else {
-        alert("Invalid number or amount.");
+      if (this.sendPin !== this.correctPin) {
+        alert('Incorrect PIN.');
+        return;
       }
-      //to save request in use rprofile before storing to database
-      this.saveToLocalStorage();
 
+      if (!this.validatePhoneNumber(this.sendNumber) || this.sendAmount <= 0) {
+        alert('Invalid number or amount.');
+        return;
+      }
+
+      if (this.sendAmount > this.balance) {
+        alert('Insufficient balance!');
+        return;
+      }
+
+      const txn = this.createTransaction(this.sendName, this.sendNumber, this.sendAmount, '- Sent');
+      this.balance -= this.sendAmount;
+      this.transactions.push({ ...txn, balance: this.balance });
+      this.resetSendForm();
+      this.saveToLocalStorage();
     },
 
     confirmRequest() {
-      if (this.validatePhoneNumber(this.receiveNumber) && this.receiveAmount > 0) {
-        const code = 'TX' + Math.floor(Math.random() * 1000000);
-        const time = new Date().toLocaleString();
-        this.balance += this.receiveAmount;
-
-        this.transactions.push({
-  code,
-  name: this.receiveName,
-  number: this.receiveNumber, // Add phone number
-  amount: this.receiveAmount,
-  type: '+ Received',
-  time,
-  balance: this.balance
-});
-
-
-        this.resetReceiveForm();
-      } else {
-        alert("Invalid number or amount.");
+      if (this.receivePin !== this.correctPin) {
+        alert('Incorrect PIN.');
+        return;
       }
-      //to save request in use rprofile before storing to database
+
+      if (!this.validatePhoneNumber(this.receiveNumber) || this.receiveAmount <= 0) {
+        alert('Invalid number or amount.');
+        return;
+      }
+
+      const txn = this.createTransaction(this.receiveName, this.receiveNumber, this.receiveAmount, '+ Received');
+      this.balance += this.receiveAmount;
+      this.transactions.push({ ...txn, balance: this.balance });
+      this.resetReceiveForm();
       this.saveToLocalStorage();
+    },
+
+    createTransaction(name, number, amount, type) {
+      return {
+        code: 'TX' + Math.floor(Math.random() * 1000000),
+        name,
+        number,
+        amount,
+        type,
+        time: new Date().toLocaleString()
+      };
     },
 
     validatePhoneNumber(number) {
@@ -145,77 +156,77 @@ mounted() {
       this.sendName = '';
       this.sendNumber = '';
       this.sendAmount = 0;
+      this.sendPin = '';
     },
 
     resetReceiveForm() {
       this.receiveName = '';
       this.receiveNumber = '';
       this.receiveAmount = 0;
+      this.receivePin = '';
     },
-    //adding the fucntion fo rsaving user transactions on their page
+
     saveToLocalStorage() {
-  localStorage.setItem('transactions', JSON.stringify(this.transactions));
-  localStorage.setItem('balance', this.balance.toString());
+      localStorage.setItem('transactions', JSON.stringify(this.transactions));
+      localStorage.setItem('balance', this.balance.toString());
+    }
+  }
+};
+</script>
+
+<style scoped>
+.family-friends-page {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin: 20px;
 }
 
+.options-container {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin: 20px 0;
+}
 
-    }
-  
-};
+.option-box {
+  border: 1px solid #007BFF;
+  border-radius: 8px;
+  padding: 20px;
+  width: 250px;
+  text-align: center;
+  transition: box-shadow 0.3s;
+}
 
-  </script>
-  
-  <style scoped>
-  .family-friends-page {
-    font-family: Arial, sans-serif;
-    text-align: center;
-    margin: 20px;
-  }
-  
-  .options-container {
-    display: flex;
-    justify-content: space-around;
-    margin: 20px 0;
-  }
-  
-  .option-box {
-    border: 1px solid #007BFF;
-    border-radius: 8px;
-    padding: 20px;
-    width: 200px;
-    text-align: center;
-    cursor: pointer;
-    transition: box-shadow 0.3s;
-  }
-  
-  .option-box:hover {
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-  }
-  
-  input[type="tel"] {
-    width: 80%;
-    padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #007BFF;
-    border-radius: 5px;
-  }
-  
-  button {
-    padding: 10px 20px;
-    background-color: #007BFF;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  button:hover {
-    background-color: #0056b3;
-  }
-  .receipt-table {
+.option-box:hover {
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+input {
+  width: 80%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #007BFF;
+  border-radius: 5px;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.receipt-table {
   margin-top: 30px;
   padding: 20px;
-  max-width: 90%;
+  max-width: 95%;
   margin-left: auto;
   margin-right: auto;
 }
@@ -226,7 +237,8 @@ table {
   font-size: 14px;
 }
 
-th, td {
+th,
+td {
   border: 1px solid #ccc;
   padding: 10px;
   text-align: center;
@@ -240,5 +252,4 @@ thead {
 tbody tr:nth-child(even) {
   background-color: #f2f2f2;
 }
-
-  </style>
+</style>

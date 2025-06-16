@@ -11,6 +11,10 @@ import UserSavings from '@/components/UserSavings.vue';
 import UserProfile from '@/components/UserProfile.vue';
 import LogIn from '@/components/LogIn.vue'
 import SignUp from '@/components/SignUp.vue'
+import DailyExpenseFunction from '@/components/DailyExpenseFunction.vue';
+import DepositSavings from '@/components/DepositSavings.vue';
+import WithdrawSavings from '@/components/WithdrawSavings.vue';
+
 
 // Future components
 // import BudgetPage from '@/components/BudgetPage.vue';
@@ -74,6 +78,24 @@ const routes = [
     name: 'SignUp',
     component: SignUp
   },
+  // DailyExpenseFunction is a component that handles daily expenses
+  {
+    path: '/daily-expense-function',
+    name: 'DailyExpenseFunction',
+    component: DailyExpenseFunction
+  },
+  //Adding savings from account balance
+  {
+    path: '/deposit-savings',
+    name: 'DepositSavings',
+    component: DepositSavings
+  },
+  //Withdrawing savings from user savings
+  {
+    path: '/withdraw-savings',
+    name: 'WithdrawSavings',
+    component: WithdrawSavings
+  }
   // 
   // Future routes
   // {
