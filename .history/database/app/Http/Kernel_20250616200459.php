@@ -1,0 +1,1 @@
+<!--Rewritten to handle CORS issues between signup forms and -->

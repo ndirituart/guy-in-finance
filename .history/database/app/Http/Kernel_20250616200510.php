@@ -1,5 +1,4 @@
 <!--Rewritten to handle CORS issues between signup forms and API endpoints to database-->
-<?php
 // app/Http/Kernel.php
 
 namespace App\Http;
