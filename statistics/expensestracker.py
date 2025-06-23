@@ -1,5 +1,5 @@
 #I inted to display bar graphs of INCOME (salary, chama, money received from friends/family)
-#Agains EXPENSES (rent, phone bills, garbage, electricity,water, travel)
+#Against EXPENSES (rent, phone bills, garbage, electricity,water, travel)
 import pandas as pd
 import plotly.express as px
 import plotly.io as pio
