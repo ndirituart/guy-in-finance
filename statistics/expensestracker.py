@@ -26,6 +26,7 @@ df.dropna(subset=['Date'], inplace=False)
 # Filter years 2020 to 2025, not necessary as my data starts and stops here
 df_filtered = df[df['Year'].between(2020, 2025)]
 
+#The only two columns I have in my bar graph, Year and Amount of money
 df_grouped = df_filtered.groupby(['Year', 'Money Flow'])['Amount'].sum().reset_index()
 # Plot bar chart
 fig = px.bar(
